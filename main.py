@@ -20,7 +20,9 @@ def main():
         api_key=api_key
     )
 
-    response = client.chat.completions.create(model="openrouter/free", messages={"role": "user", "content": args.user_prompt})
+    messages = [{"role": "user", "content": args.user_prompt}]
+
+    response = client.chat.completions.create(model="openrouter/free", messages=messages)
 
     if response.usage is None:
         raise RuntimeError("helpful message: response.usage is None. This may indicate that the API response did not include usage information. Please check the API documentation or contact support for assistance.")

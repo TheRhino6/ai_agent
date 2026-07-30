@@ -8,6 +8,7 @@ from openai import OpenAI
 def main():
     parser = argparse.ArgumentParser(description="Chatbot")
     parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
 
     load_dotenv()
@@ -27,9 +28,11 @@ def main():
     if response.usage is None:
         raise RuntimeError("helpful message: response.usage is None. This may indicate that the API response did not include usage information. Please check the API documentation or contact support for assistance.")
 
-    print (f"Prompt tokens: {response.usage.prompt_tokens}")
-    print (f"Response tokens: {response.usage.total_tokens}")
     print (f"response: {response.choices[0].message.content}")
+    if args.verbose:
+        print (f"User prompt: {args.user_prompt}")
+        print (f"Prompt tokens: {response.usage.prompt_tokens}")
+        print (f"Response tokens: {response.usage.total_tokens}")
 
 if __name__ == "__main__":
     main()

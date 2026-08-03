@@ -3,6 +3,7 @@ import argparse
 #from urllib import response
 from dotenv import load_dotenv
 from openai import OpenAI
+from prompts import system_prompt
 
 
 def main():
@@ -21,9 +22,12 @@ def main():
         api_key=api_key
     )
 
-    messages = [{"role": "user", "content": args.user_prompt}]
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": args.user_prompt}
+        ]
 
-    response = client.chat.completions.create(model="openrouter/free", messages=messages)
+    response = client.chat.completions.create(model="openrouter/free", messages=messages, temperature=0)
 
     if response.usage is None:
         raise RuntimeError("helpful message: response.usage is None. This may indicate that the API response did not include usage information. Please check the API documentation or contact support for assistance.")

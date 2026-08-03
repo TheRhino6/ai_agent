@@ -1,9 +1,12 @@
+from email import message
 import os
 import argparse
+import json
 #from urllib import response
 from dotenv import load_dotenv
 from openai import OpenAI
 from prompts import system_prompt
+from call_function import available_functions
 
 
 def main():
@@ -27,12 +30,26 @@ def main():
         {"role": "user", "content": args.user_prompt}
         ]
 
-    response = client.chat.completions.create(model="openrouter/free", messages=messages, temperature=0)
+    response = client.chat.completions.create(
+        model="openrouter/free", 
+        messages=messages,
+        tools=available_functions, 
+        temperature=0
+        )
+
+    message = response.choices[0].message
+    
+    if message.tool_calls:
+        for tool_call in message.tool_calls:
+            function_args = json.loads(tool_call.function.arguments or "{}")
+            print(f"Calling function: {tool_call.function.name}({function_args})")
+    else:
+        print(message.content)
 
     if response.usage is None:
         raise RuntimeError("helpful message: response.usage is None. This may indicate that the API response did not include usage information. Please check the API documentation or contact support for assistance.")
 
-    print (f"response: {response.choices[0].message.content}")
+
     if args.verbose:
         print (f"User prompt: {args.user_prompt}")
         print (f"Prompt tokens: {response.usage.prompt_tokens}")

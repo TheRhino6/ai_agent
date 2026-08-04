@@ -4,8 +4,8 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
 
     try:
         abs_path = os.path.abspath(working_directory)
-        target_dir = os.path.normpath(os.path.join(abs_path, directory))
         valid_target_dir = os.path.commonpath([abs_path, target_dir]) == abs_path
+        target_dir = os.path.normpath(os.path.join(abs_path, directory))
         if valid_target_dir == False:
             raise ValueError(f'Error: Cannot list "{directory}" as it is outside the permitted working directory')
         for item in os.listdir(target_dir):
@@ -33,6 +33,7 @@ schema_get_files_info = {
                     "description": "Directory path to list files from, relative to the working directory (default is the working directory itself)",
                 },
             },
+            "required": ["directory"]
         },
     },
 }

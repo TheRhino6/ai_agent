@@ -10,7 +10,6 @@ def get_file_content(working_directory: str, file_path: str) -> str:
             raise ValueError(f'Cannot read "{file_path}" as it is outside the permitted working directory')
         if not os.path.isfile(target_file):
             raise ValueError(f'File not found or is not a regular file: "{file_path}"')
-        print (len(target_file))
         with open(target_file, 'r') as f:
             content = f.read(MAX_CHARS)
             if f.read(1):
